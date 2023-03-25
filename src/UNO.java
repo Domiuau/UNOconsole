@@ -1398,9 +1398,7 @@ public class UNO {
                 "\u001B[00m│                 │\n" +
                 "\u001B[00m└─────────────────┘";
 
-        scanner = new
-
-                Scanner(System.in);
+        scanner = new Scanner(System.in);
         //imprimi todas as cartas de maneira organizada
         System.out.println("Todas as cartas arrumadas");
 
@@ -1430,10 +1428,7 @@ public class UNO {
                 passarCartasAleatoriasParaOutroVetor(maoDaMaquina, cartasEmbaralhadas);
 
         //escolher uma carta aleatoria para o inicio do jogo
-        pilhaDoJogo = new String[1];
-        cartasEmbaralhadas =
-
-                passarCartasAleatoriasParaOutroVetor(pilhaDoJogo, cartasEmbaralhadas);
+        escolherCartaDeInicio();
 
 
         corDeJogo = valorDaCarta(pilhaDoJogo[0]).substring(0, valorDaCarta(pilhaDoJogo[0]).length() - 3);
@@ -1454,10 +1449,7 @@ public class UNO {
 
             imprimirJogo();
             System.out.println("Aguardando o adversário jogar...");
-            try {
-                Thread.sleep(random.nextInt(1300) + 700);
-            } catch (Exception e) {
-            }
+            espere(random.nextInt(1300) + 700);
 
             jogarMaquina();
 
@@ -1468,6 +1460,24 @@ public class UNO {
         System.out.println("Fim de jogo");
 
 
+    }
+
+    static void escolherCartaDeInicio(){
+        pilhaDoJogo = new String[1];
+        cartasEmbaralhadas = passarCartasAleatoriasParaOutroVetor(pilhaDoJogo, cartasEmbaralhadas);
+
+        if (valorDaCarta(pilhaDoJogo[0]).contains("RR") || valorDaCarta(pilhaDoJogo[0]).contains("ESPELHO") || valorDaCarta(pilhaDoJogo[0]).contains("B") ||
+                valorDaCarta(pilhaDoJogo[0]).contains("+")){
+
+            String[] ajuste = new String[cartasEmbaralhadas.length+1];
+            for (int i = 0; i < cartasEmbaralhadas.length; i++) {
+                ajuste[i+1] = cartasEmbaralhadas[i];
+            }
+            ajuste[0] = pilhaDoJogo[0];
+            escolherCartaDeInicio();
+
+
+        }
     }
 
     static void escolherCor(int posicao) {
@@ -1496,13 +1506,8 @@ public class UNO {
         }
         pilhaDoJogoAjuste[0] = cartasColoridas[posicao - 1];
         pilhaDoJogo = pilhaDoJogoAjuste;
-        try {
-            Thread.sleep(1000);
-
-        } catch (Exception e) {
-
-        }
         imprimirJogo();
+        espere(1000);
 
 
     }
@@ -1526,11 +1531,7 @@ public class UNO {
                 imprimirJogo();
                 if (valorSeparadoMao[1].contains("+")) {
                     for (int i = 0; i < Integer.parseInt(valorSeparadoMao[1].charAt(valorSeparadoMao[1].length() - 1) + ""); i++) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
-
-                        }
+                        espere(1000);
 
                         suaMao = comprar(suaMao);
                         imprimirJogo();
@@ -1540,6 +1541,7 @@ public class UNO {
                 }
 
                 if (valorSeparadoMao[1].contains("E") || valorSeparadoMao[1].contains("+4")) {
+                    espere(1000);
                     System.out.println("Inimigo escolhendo a cor...");
                     umaSimplesImpressao(cartasColoridas);
                     System.out.println("Cartas do jogo:");
@@ -1549,11 +1551,7 @@ public class UNO {
                     escolherCor(random.nextInt(3) + 1);
 
                 } else if (valorSeparadoMao[1].contains("RR") || valorSeparadoMao[1].contains("B")) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception e) {
-
-                    }
+                    espere(1000);
                     jogarMaquina();
 
                 }
@@ -1568,16 +1566,10 @@ public class UNO {
         //e o algoritmo acima sera chamado novamente, ou seja, a maquina fica comprando ate ela ter alguma carta para jogar
         if (maoDaMaquina.length == cartasMaquina) {
 
-            try {
-                Thread.sleep(800);
-            } catch (Exception e) {
-            }
+            espere(800);
             maoDaMaquina = comprar(maoDaMaquina);
             imprimirJogo();
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-            }
+            espere(500);
             jogarMaquina();
         }
     }
@@ -1598,14 +1590,9 @@ public class UNO {
                 imprimirJogo();
 
 
-
                 if (valorSeparadoMao[1].contains("+")) {
                     for (int i = 0; i < Integer.parseInt(valorSeparadoMao[1].charAt(valorSeparadoMao[1].length() - 1) + ""); i++) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
-
-                        }
+                        espere(1000);
 
                         maoDaMaquina = comprar(maoDaMaquina);
                         imprimirJogo();
@@ -1613,25 +1600,20 @@ public class UNO {
                     }
                 }
 
-                    if (valorSeparadoMao[1].contains("+4") || valorSeparadoMao[1].contains("E")) {
-                        System.out.println("Cartas do inimigo:");
-                        umaSimplesImpressao(maoDaMaquina);
-                        System.out.println("Cartas do jogo:");
-                        umaSimplesImpressao(pilhaDoJogo);
-                        System.out.println("Escolha uma cor:");
-                        umaSimplesImpressaoMao(cartasColoridas);
-                        escolherCor(scanner.nextInt());
-                    } else if (valorSeparadoMao[1].contains("RR") || valorSeparadoMao[1].contains("B")) {
+                if (valorSeparadoMao[1].contains("+4") || valorSeparadoMao[1].contains("E")) {
+                    espere(1000);
+                    System.out.println("Cartas do inimigo:");
+                    umaSimplesImpressao(maoDaMaquina);
+                    System.out.println("Cartas do jogo:");
+                    umaSimplesImpressao(pilhaDoJogo);
+                    System.out.println("Escolha uma cor:");
+                    umaSimplesImpressaoMao(cartasColoridas);
+                    escolherCor(scanner.nextInt());
+                } else if (valorSeparadoMao[1].contains("RR") || valorSeparadoMao[1].contains("B")) {
 
-                        jogar(scanner.next(), suaMao);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
+                    jogar(scanner.next(), suaMao);
 
-                        }
-                    }
-
-
+                }
 
 
             } else {
@@ -1691,6 +1673,19 @@ public class UNO {
         //ou o vetor "cartasEmbaralhadas", sobrando apenas 1 carta aleatoria para o jogo continuar
 
         if (cartasEmbaralhadas.length == 0) {
+
+            for (int i = 0; i < pilhaDoJogo.length; i++) {
+                if (valorDaCarta(pilhaDoJogo[i]).endsWith("O")) {
+                    reordenarVetor(i, pilhaDoJogo);
+
+                    String[] pilhaDeJogoAjuste = new String[pilhaDoJogo.length - 1];
+                    for (int j = 0; j < pilhaDeJogoAjuste.length; j++) {
+                        pilhaDeJogoAjuste[j] = pilhaDoJogo[j];
+                    }
+
+                    pilhaDoJogo = pilhaDeJogoAjuste;
+                }
+            }
 
             cartasEmbaralhadas = new String[pilhaDoJogo.length - 1];
             pilhaDoJogo = passarCartasAleatoriasParaOutroVetor(cartasEmbaralhadas, pilhaDoJogo);
@@ -1778,6 +1773,13 @@ public class UNO {
 
         //retorna o vetor com as cartas sorteadas removidas
         return vetorCartas;
+    }
+
+    //criei para tirar os Thread.sleep do meio dos codigos
+    static void espere(int milisegundos){
+        try {
+            Thread.sleep(milisegundos);
+        } catch (Exception e){}
     }
 
 
