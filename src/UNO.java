@@ -12,6 +12,9 @@ public class UNO {
     static String cartaBranca;
     static String loja;
     static String[] cartasEmbaralhadas;
+    static String corDeJogo;
+    static String[] cartasColoridas;
+
 
     public static void main(String[] args) {
         random = new Random();
@@ -1320,6 +1323,57 @@ public class UNO {
 
         };
 
+        cartasColoridas = new String[4];
+
+        cartasColoridas[0] = "\u001B[31m┌─────────────────┐\n" +
+                "\u001B[31m│                 │\n" +
+                "\u001B[31m│     ███████     │\n" +
+                "\u001B[31m│    █████████    │\n" +
+                "\u001B[31m│    █████████    │\n" +
+                "\u001B[31m│     ███████     │\n" +
+                "\u001B[31m│                 │\n" +
+                "\u001B[31m│                 │\n" +
+                "\u001B[31m│   VERMELHO#MO   │\n" +
+                "\u001B[31m│                 │\n" +
+                "\u001B[31m└─────────────────┘";
+
+        cartasColoridas[1] = "\u001B[32m┌─────────────────┐\n" +
+                "\u001B[32m│                 │\n" +
+                "\u001B[32m│     ███████     │\n" +
+                "\u001B[32m│    █████████    │\n" +
+                "\u001B[32m│    █████████    │\n" +
+                "\u001B[32m│     ███████     │\n" +
+                "\u001B[32m│                 │\n" +
+                "\u001B[32m│                 │\n" +
+                "\u001B[32m│     VERDE#MO    │\n" +
+                "\u001B[32m│                 │\n" +
+                "\u001B[32m└─────────────────┘";
+
+        cartasColoridas[2] = "\u001B[33m┌─────────────────┐\n" +
+                "\u001B[33m│                 │\n" +
+                "\u001B[33m│     ███████     │\n" +
+                "\u001B[33m│    █████████    │\n" +
+                "\u001B[33m│    █████████    │\n" +
+                "\u001B[33m│     ███████     │\n" +
+                "\u001B[33m│                 │\n" +
+                "\u001B[33m│                 │\n" +
+                "\u001B[33m│   AMARELO#MO    │\n" +
+                "\u001B[33m│                 │\n" +
+                "\u001B[33m└─────────────────┘";
+
+        cartasColoridas[3] = "\u001B[34m┌─────────────────┐\n" +
+                "\u001B[34m│                 │\n" +
+                "\u001B[34m│     ███████     │\n" +
+                "\u001B[34m│    █████████    │\n" +
+                "\u001B[34m│    █████████    │\n" +
+                "\u001B[34m│     ███████     │\n" +
+                "\u001B[34m│                 │\n" +
+                "\u001B[34m│                 │\n" +
+                "\u001B[34m│     AZUL#MO     │\n" +
+                "\u001B[34m│                 │\n" +
+                "\u001B[34m└─────────────────┘";
+
+
         cartaBranca = "\u001B[00m┌─────────────────┐\n" +
                 "\u001B[00m│                 │\n" +
                 "\u001B[00m│                 │\n" +
@@ -1344,9 +1398,12 @@ public class UNO {
                 "\u001B[00m│                 │\n" +
                 "\u001B[00m└─────────────────┘";
 
-        scanner = new Scanner(System.in);
+        scanner = new
+
+                Scanner(System.in);
         //imprimi todas as cartas de maneira organizada
         System.out.println("Todas as cartas arrumadas");
+
         umaSimplesImpressao(todasCartas);
 
         cartasEmbaralhadas = new String[todasCartas.length];
@@ -1356,28 +1413,38 @@ public class UNO {
 
         //exibir as cartas embaralhadas (nao sei se deixa isso no game)
         System.out.println("\u001B[0mTodas as cartas embaralhadas");
+
         umaSimplesImpressao(cartasEmbaralhadas);
 
         //escolher quantas cartas cada player terá no inicio do game
         System.out.println("\u001B[0mCom quantas cartas cada jogador começará?");
         int numeroDeCartasNaMao = scanner.nextInt();
         suaMao = new String[numeroDeCartasNaMao];
-        cartasEmbaralhadas = passarCartasAleatoriasParaOutroVetor(suaMao, cartasEmbaralhadas);
+        cartasEmbaralhadas =
+
+                passarCartasAleatoriasParaOutroVetor(suaMao, cartasEmbaralhadas);
+
         maoDaMaquina = new String[numeroDeCartasNaMao];
-        cartasEmbaralhadas = passarCartasAleatoriasParaOutroVetor(maoDaMaquina, cartasEmbaralhadas);
+        cartasEmbaralhadas =
+
+                passarCartasAleatoriasParaOutroVetor(maoDaMaquina, cartasEmbaralhadas);
 
         //escolher uma carta aleatoria para o inicio do jogo
         pilhaDoJogo = new String[1];
-        cartasEmbaralhadas = passarCartasAleatoriasParaOutroVetor(pilhaDoJogo, cartasEmbaralhadas);
+        cartasEmbaralhadas =
 
+                passarCartasAleatoriasParaOutroVetor(pilhaDoJogo, cartasEmbaralhadas);
+
+
+        corDeJogo = valorDaCarta(pilhaDoJogo[0]).substring(0, valorDaCarta(pilhaDoJogo[0]).length() - 3);
 
         //inicio do loop do jogo
         for (int i = 1; suaMao.length > 0 && maoDaMaquina.length > 0; i++) {
-
+            System.out.println(corDeJogo);
             //vez do jogador
             System.out.println("\u001B[0m\nRodada número " + i);
             imprimirJogo();
-            jogar(scanner.next(), suaMao, true);
+            jogar(scanner.next(), suaMao);
 
 
             if (suaMao.length == 0)
@@ -1397,10 +1464,49 @@ public class UNO {
 
         }
 
+        imprimirJogo();
         System.out.println("Fim de jogo");
 
 
     }
+
+    static void escolherCor(int posicao) {
+        switch (posicao) {
+            case 1:
+                corDeJogo = "VERMELHO";
+                break;
+
+            case 2:
+                corDeJogo = "VERDE";
+                break;
+
+            case 3:
+                corDeJogo = "AMARELO";
+                break;
+
+            case 4:
+                corDeJogo = "AZUL";
+                break;
+        }
+
+
+        String[] pilhaDoJogoAjuste = new String[pilhaDoJogo.length + 1];
+        for (int i = 1; i < pilhaDoJogoAjuste.length; i++) {
+            pilhaDoJogoAjuste[i] = pilhaDoJogo[i - 1];
+        }
+        pilhaDoJogoAjuste[0] = cartasColoridas[posicao - 1];
+        pilhaDoJogo = pilhaDoJogoAjuste;
+        try {
+            Thread.sleep(1000);
+
+        } catch (Exception e) {
+
+        }
+        imprimirJogo();
+
+
+    }
+
 
     static void jogarMaquina() {
 
@@ -1414,11 +1520,48 @@ public class UNO {
         for (int j = 0; j < maoDaMaquina.length; j++) {
             valorSeparadoMao = valorDaCarta(maoDaMaquina[j]).split("#");
             valorSeparadoPilha = valorDaCarta(pilhaDoJogo[0]).split("#");
-            if (valorSeparadoPilha[0].contains(valorSeparadoMao[0]) || valorSeparadoPilha[1].contains(valorSeparadoMao[1])) {
-                System.out.println(valorSeparadoMao[1]);
-                jogar((j + 1) + "", maoDaMaquina, false);
+            if (valorSeparadoMao[0].contains(corDeJogo) || valorSeparadoPilha[1].contains(valorSeparadoMao[1]) || valorSeparadoMao[1].contains("+4") || valorSeparadoMao[1].contains("E")) {
+                corDeJogo = valorSeparadoMao[0];
+                maoDaMaquina = passarUmaCartaParaPilhaDeJogo(pilhaDoJogo, maoDaMaquina, j);
+                imprimirJogo();
+                if (valorSeparadoMao[1].contains("+")) {
+                    for (int i = 0; i < Integer.parseInt(valorSeparadoMao[1].charAt(valorSeparadoMao[1].length() - 1) + ""); i++) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+
+                        }
+
+                        suaMao = comprar(suaMao);
+                        imprimirJogo();
+
+                    }
+
+                }
+
+                if (valorSeparadoMao[1].contains("E") || valorSeparadoMao[1].contains("+4")) {
+                    System.out.println("Inimigo escolhendo a cor...");
+                    umaSimplesImpressao(cartasColoridas);
+                    System.out.println("Cartas do jogo:");
+                    umaSimplesImpressao(pilhaDoJogo);
+                    System.out.println("Suas cartas:");
+                    umaSimplesImpressao(suaMao);
+                    escolherCor(random.nextInt(3) + 1);
+
+                } else if (valorSeparadoMao[1].contains("RR") || valorSeparadoMao[1].contains("B")) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+
+                    }
+                    jogarMaquina();
+
+                }
+
                 break;
             }
+
+
         }
         //aqui sera testado se alguma carta foi jogada pelo algoritmo de cima, caso alguma carta tenha sido jogada, o jogo segue
         //normalmente indo para a vez do jogador, agora caso o algoritmo não tenha jogado nenhuma carta, sera feita uma compra
@@ -1429,7 +1572,8 @@ public class UNO {
                 Thread.sleep(800);
             } catch (Exception e) {
             }
-            jogar("loja", maoDaMaquina, false);
+            maoDaMaquina = comprar(maoDaMaquina);
+            imprimirJogo();
             try {
                 Thread.sleep(500);
             } catch (Exception e) {
@@ -1438,45 +1582,76 @@ public class UNO {
         }
     }
 
-    static void jogar(String jogada, String[] vetorCartas, boolean vez) {
+
+    static void jogar(String jogada, String[] vetorCartas) {
 
         //aqui é decidido se foi uma jogafa válida ou não
         //a variavel "vez" é true quando for a vez do jogador jogar e false quando for a vez da maquina, a função precisa saber
         //para mudar o vetor certo
         if (!jogada.equals("loja")) {
-
-            String[] valorSeparadoMao = valorDaCarta(vetorCartas[Integer.parseInt(jogada) - 1]).split("#");
+            //maoDaMaquina = compararCarta(vetorCartas[Integer.parseInt(jogada) - 1], pilhaDoJogo[0], maoDaMaquina);
+            String[] valorSeparadoMao = valorDaCarta(suaMao[Integer.parseInt(jogada) - 1]).split("#");
             String[] valorSeparadoPilha = valorDaCarta(pilhaDoJogo[0]).split("#");
+            if (valorSeparadoMao[0].contains(corDeJogo) || valorSeparadoPilha[1].contains(valorSeparadoMao[1]) || valorSeparadoMao[1].contains("+4") || valorSeparadoMao[1].contains("E")) {
+                corDeJogo = valorSeparadoMao[0];
+                suaMao = passarUmaCartaParaPilhaDeJogo(pilhaDoJogo, vetorCartas, Integer.parseInt(jogada) - 1);
+                imprimirJogo();
 
-            if (valorSeparadoPilha[0].contains(valorSeparadoMao[0]) || valorSeparadoPilha[1].contains(valorSeparadoMao[1])) {
 
-                if (vez)
-                    suaMao = passarUmaCartaParaPilhaDeJogo(pilhaDoJogo, vetorCartas, Integer.parseInt(jogada) - 1);
-                else
-                    maoDaMaquina = passarUmaCartaParaPilhaDeJogo(pilhaDoJogo, vetorCartas, Integer.parseInt(jogada) - 1);
+
+                if (valorSeparadoMao[1].contains("+")) {
+                    for (int i = 0; i < Integer.parseInt(valorSeparadoMao[1].charAt(valorSeparadoMao[1].length() - 1) + ""); i++) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+
+                        }
+
+                        maoDaMaquina = comprar(maoDaMaquina);
+                        imprimirJogo();
+
+                    }
+                }
+
+                    if (valorSeparadoMao[1].contains("+4") || valorSeparadoMao[1].contains("E")) {
+                        System.out.println("Cartas do inimigo:");
+                        umaSimplesImpressao(maoDaMaquina);
+                        System.out.println("Cartas do jogo:");
+                        umaSimplesImpressao(pilhaDoJogo);
+                        System.out.println("Escolha uma cor:");
+                        umaSimplesImpressaoMao(cartasColoridas);
+                        escolherCor(scanner.nextInt());
+                    } else if (valorSeparadoMao[1].contains("RR") || valorSeparadoMao[1].contains("B")) {
+
+                        jogar(scanner.next(), suaMao);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+
+                        }
+                    }
+
+
+
+
             } else {
 
                 System.out.println("Você não pode jogar um " + valorDaCarta(vetorCartas[Integer.parseInt(jogada) - 1]) + " em um " + valorDaCarta(pilhaDoJogo[0]));
-                jogar(scanner.next(), vetorCartas, vez);
+                jogar(scanner.next(), vetorCartas);
 
             }
+
+
         } else {
             //caso a jogada seja compra
-            if (vez) {
-                suaMao = comprar(vetorCartas);
-                imprimirJogo();
-                //apos a compra ser realizada e as cartas atualizadas na tela do usuario, o metodo jogar é chamado novamente
-                jogar(scanner.next(), suaMao, vez);
-            } else {
-                maoDaMaquina = comprar(vetorCartas);
-                imprimirJogo();
-                //o que ja acontece na maquina no metodo "jogarMaquina"
-
-            }
-
+            suaMao = comprar(vetorCartas);
+            imprimirJogo();
+            //apos a compra ser realizada e as cartas atualizadas na tela do usuario, o metodo jogar é chamado novamente
+            jogar(scanner.next(), suaMao);
 
         }
     }
+
 
     static String valorDaCarta(String carta) {
         //pega a linha que contem as informações da carta e retorna apenas a cor e o numero
