@@ -3,21 +3,50 @@ import java.util.Scanner;
 
 public class UNO {
 
-    static int sorteio;
-    static Random random;
-    static Scanner scanner;
+    //Declaração do random utilizado para embaralhar as cartas
+    static Random random = new Random();;
+
+    //Scanner para pegar as jogadas do usuário
+    static Scanner scanner = new Scanner(System.in);;
+
+    //Vetor onde as cartas do jogador ficarão guardadas
     static String[] suaMao;
+
+    //Vetor onde a pilha do jogo ficará armazenada
     static String[] pilhaDoJogo;
+
+    //Vetor onde as cartas da máquina ficarão guardadas
     static String[] maoDaMaquina;
+
+    //Variável que armazena um modelo da parte de trás de uma carta
+
     static String cartaBranca;
+
+    //Armazena o modelo da loja
     static String loja;
+
+    //Vetor onde todas as cartas do jogo são passadas embaralhadas aleatoriamente
     static String[] cartasEmbaralhadas;
+
+    //Cor da primeira carta da pilha do jogo
     static String corDeJogo;
-    static String[] cartasColoridas;
+
+    //Vetor onde os modelos das cartas que aparecem quando um espelho é jogado ficam armazenados
+    static String[] cartasColoridas = new String[4];
 
 
     public static void main(String[] args) {
-        random = new Random();
+
+        System.out.println(" __    __  .__   __.   ______   \n" +
+                "|  |  |  | |  \\ |  |  /  __  \\  \n" +
+                "|  |  |  | |   \\|  | |  |  |  | \n" +
+                "|  |  |  | |  . `  | |  |  |  | \n" +
+                "|  `--'  | |  |\\   | |  `--'  | \n" +
+                " \\______/  |__| \\__|  \\______/");
+
+        //Vetor onde o modelo de todas as cartas do jogo estão armazenados
+        //Ele não está completo nesse documento por conter 1.378 linhas
+
         String[] todasCartas = {
 
                 "\u001B[34m┌─────────────────┐\n" +
@@ -1323,7 +1352,7 @@ public class UNO {
 
         };
 
-        cartasColoridas = new String[4];
+        //Modelo das cartas para escolher uma cor após jogar um espelho ou um +4
 
         cartasColoridas[0] = "\u001B[31m┌─────────────────┐\n" +
                 "\u001B[31m│                 │\n" +
@@ -1373,6 +1402,7 @@ public class UNO {
                 "\u001B[34m│                 │\n" +
                 "\u001B[34m└─────────────────┘";
 
+        //Modelo parte de trás da carta
 
         cartaBranca = "\u001B[00m┌─────────────────┐\n" +
                 "\u001B[00m│                 │\n" +
@@ -1386,6 +1416,8 @@ public class UNO {
                 "\u001B[00m│                 │\n" +
                 "\u001B[00m└─────────────────┘";
 
+        //Modelo da loja
+
         loja = "\u001B[00m┌─────────────────┐\n" +
                 "\u001B[00m│                 │\n" +
                 "\u001B[00m│                 │\n" +
@@ -1398,74 +1430,94 @@ public class UNO {
                 "\u001B[00m│                 │\n" +
                 "\u001B[00m└─────────────────┘";
 
-        scanner = new Scanner(System.in);
-        //imprimi todas as cartas de maneira organizada
-        System.out.println("Todas as cartas arrumadas");
+        System.out.println("\u001B[mTodas as cartas do jogo");
 
+        //Imprimi todas as cartas de maneira organizada utilizando o método "umaSimplesImpressao" que será explicado mais tarde
         umaSimplesImpressao(todasCartas);
 
+        //O vetor de cartas embaralhadas recebe o tamanho do vetor que armazena todas as cartas do jogo para poder armazená-las de forma aleatória
         cartasEmbaralhadas = new String[todasCartas.length];
 
-        //embaralha as cartas, o metodo irá retornar um vetor vazio
+        //Embaralha as cartas, o método irá retornar um vetor vazio
         passarCartasAleatoriasParaOutroVetor(cartasEmbaralhadas, todasCartas);
 
-        //exibir as cartas embaralhadas (nao sei se deixa isso no game)
-        System.out.println("\u001B[0mTodas as cartas embaralhadas");
+        //As cartas embaralhadas aleatoriamente podem ser exibidas descomentando as 2 linhas abaixo
+        //System.out.println("\u001B[0mTodas as cartas embaralhadas");
+        //umaSimplesImpressao(cartasEmbaralhadas);
 
-        umaSimplesImpressao(cartasEmbaralhadas);
-
-        //escolher quantas cartas cada player terá no inicio do game
+        //Aqui é solicitado ao usuário com quantas cartas o jogo começará
         System.out.println("\u001B[0mCom quantas cartas cada jogador começará?");
         int numeroDeCartasNaMao = scanner.nextInt();
+
+        //Criando o vetor da mão do usuário e da máquina, de acordo com o tamanho que ele informou
         suaMao = new String[numeroDeCartasNaMao];
-        cartasEmbaralhadas =
-
-                passarCartasAleatoriasParaOutroVetor(suaMao, cartasEmbaralhadas);
-
+        cartasEmbaralhadas = passarCartasAleatoriasParaOutroVetor(suaMao, cartasEmbaralhadas);
         maoDaMaquina = new String[numeroDeCartasNaMao];
-        cartasEmbaralhadas =
+        cartasEmbaralhadas = passarCartasAleatoriasParaOutroVetor(maoDaMaquina, cartasEmbaralhadas);
 
-                passarCartasAleatoriasParaOutroVetor(maoDaMaquina, cartasEmbaralhadas);
-
-        //escolher uma carta aleatoria para o inicio do jogo
+        //Escolher uma carta aleatória para o início do jogo
         escolherCartaDeInicio();
-
-
         corDeJogo = valorDaCarta(pilhaDoJogo[0]).substring(0, valorDaCarta(pilhaDoJogo[0]).length() - 3);
 
-        //inicio do loop do jogo
+        //Início do loop do jogo
         for (int i = 1; suaMao.length > 0 && maoDaMaquina.length > 0; i++) {
-            System.out.println(corDeJogo);
-            //vez do jogador
+
+            //Indica em que rodada o jogo está
             System.out.println("\u001B[0m\nRodada número " + i);
+
+            //Vez do usuário
             imprimirJogo();
-            jogar(scanner.next(), suaMao);
+            //Variável que defini se o número da carta jogado pelo usuário é válido
+            boolean cartaValida;
 
+            //É tentado jogar o número que o usuário inseriu, caso não seja possível, é informado que foi uma jogada inválida e pede para o usuário jogar novamente
+            do {
+                try {
+                    jogar(scanner.next(), suaMao);
+                    cartaValida = true;
+                } catch (Exception e){
+                    System.out.println("Carta inválida");
+                    cartaValida = false;
+                }
 
+            } while (!cartaValida);
+
+            //Após a jogada do usuário, caso não restem mais cartas, o jogo acaba
             if (suaMao.length == 0)
                 break;
 
-            //vez da maquina
-
+            //Vez da máquina
             imprimirJogo();
             System.out.println("Aguardando o adversário jogar...");
-            espere(random.nextInt(1300) + 700);
 
+            //Aqui o jogo é congelado por um tempinho, caso ele não fosse congelado a máquina jogaria instantaneamente, o que não ficaria muito legal, então o jogo é congelado de 700 ms a 2 segundos para dar a impressão de que "o adversário está pensando"
+            espere(random.nextInt(1301) + 700);
+
+            //Algoritmo para a máquina jogar que será explicado mais tarde
             jogarMaquina();
-
 
         }
 
+        //Após a quebrado do loop principal, o jogo é finalizado, informando quem venceu e com quantas cartas o perdedor finalizou o jogo
         imprimirJogo();
-        System.out.println("Fim de jogo");
-
+        System.out.println("\nFim de jogo\n");
+        System.out.println(suaMao.length == 0 ? "Você venceu!\nTotal de cartas na mão do inimigo: " + maoDaMaquina.length : "O adversário venceu!\nTotal de cartas na sua mão: " + suaMao.length);
 
     }
 
+    /**
+     * Coloca uma carta aleatória na pilha para poder dar início ao jogo
+     */
+
     static void escolherCartaDeInicio(){
+
+        //É adicionado 1 de tamanho ao vetor que armazena as cartas da pilha de jogo, para receber a primeira carta
         pilhaDoJogo = new String[1];
+
+        //Uma carta é passada aleatoriamente para a pilha de jogo
         cartasEmbaralhadas = passarCartasAleatoriasParaOutroVetor(pilhaDoJogo, cartasEmbaralhadas);
 
+        //Caso seja uma carta especial, uma carta será sorteada novamente
         if (valorDaCarta(pilhaDoJogo[0]).contains("RR") || valorDaCarta(pilhaDoJogo[0]).contains("ESPELHO") || valorDaCarta(pilhaDoJogo[0]).contains("B") ||
                 valorDaCarta(pilhaDoJogo[0]).contains("+")){
 
@@ -1476,11 +1528,16 @@ public class UNO {
             ajuste[0] = pilhaDoJogo[0];
             escolherCartaDeInicio();
 
-
         }
     }
 
+    /**
+     * Muda a cor de jogo de acordo com a escolha de cor feita quando um espelho ou +4 é jogado
+     * @param posicao posição de qual cor foi escolhida pela usuário
+     */
+
     static void escolherCor(int posicao) {
+
         switch (posicao) {
             case 1:
                 corDeJogo = "VERMELHO";
@@ -1499,7 +1556,7 @@ public class UNO {
                 break;
         }
 
-
+        //Essa carta de modelo com a cor escolhida é adicionada a pilha de jogo e o jogo é impresso novamente
         String[] pilhaDoJogoAjuste = new String[pilhaDoJogo.length + 1];
         for (int i = 1; i < pilhaDoJogoAjuste.length; i++) {
             pilhaDoJogoAjuste[i] = pilhaDoJogo[i - 1];
@@ -1509,86 +1566,100 @@ public class UNO {
         imprimirJogo();
         espere(1000);
 
-
     }
 
+    /**
+     * Algoritmo para fazer a máquina jogar e validar as jogadas
+     */
 
     static void jogarMaquina() {
 
-        //esses vetores são utilizados para separar o numero/tipo da carta de sua cor, separando por "#", então amarelo#4 terá
-        //o indice 0 = "amarelo" e o indice 1 = "4"
-        String[] valorSeparadoMao;
-        String[] valorSeparadoPilha;
-        //aqui esta o algoritmo simples de jogo da maquina, ele irá começar pelo indice 0 do vetor e ir testando até o final,
-        //apos encontrar a primeira carta jogavel, ela sera jogada e o loop sera cortado
-        int cartasMaquina = maoDaMaquina.length;
-        for (int j = 0; j < maoDaMaquina.length; j++) {
-            valorSeparadoMao = valorDaCarta(maoDaMaquina[j]).split("#");
-            valorSeparadoPilha = valorDaCarta(pilhaDoJogo[0]).split("#");
-            if (valorSeparadoMao[0].contains(corDeJogo) || valorSeparadoPilha[1].contains(valorSeparadoMao[1]) || valorSeparadoMao[1].contains("+4") || valorSeparadoMao[1].contains("E")) {
-                corDeJogo = valorSeparadoMao[0];
-                maoDaMaquina = passarUmaCartaParaPilhaDeJogo(pilhaDoJogo, maoDaMaquina, j);
-                imprimirJogo();
-                if (valorSeparadoMao[1].contains("+")) {
-                    for (int i = 0; i < Integer.parseInt(valorSeparadoMao[1].charAt(valorSeparadoMao[1].length() - 1) + ""); i++) {
-                        espere(1000);
+        if (maoDaMaquina.length != 0) {
 
-                        suaMao = comprar(suaMao);
-                        imprimirJogo();
+            //Esses vetores são utilizados para separar o numero/tipo da carta de sua cor, separando por "#", então amarelo#4 terá [0] = "amarelo" e [1] = "4"
+            String[] valorSeparadoMao;
+            String[] valorSeparadoPilha;
+            //Algoritmo simples para fazer a máquina jogar, ele irá começar pelo índice 0 do vetor e ir testando até o final,
+            //Após encontrar a primeira carta jogável, ela será jogada e o loop será quebrado
+            int cartasMaquina = maoDaMaquina.length;
+            for (int j = 0; j < maoDaMaquina.length; j++) {
+                valorSeparadoMao = valorDaCarta(maoDaMaquina[j]).split("#");
+                valorSeparadoPilha = valorDaCarta(pilhaDoJogo[0]).split("#");
+                //Aqui é comparada a cor e o número da carta da pilha e a carta a ser jogada
+                if (valorSeparadoMao[0].contains(corDeJogo) || valorSeparadoPilha[1].contains(valorSeparadoMao[1]) || valorSeparadoMao[1].contains("+4") || valorSeparadoMao[1].contains("E")) {
+                    //Caso o número ou a cor sejam iguais, a carta pode ser jogada, ou caso seja um espelho ou um +4
+                    //Então a cor de jogo é mudada e a carta passa da mão da máquina para a pilha de jogo
+                    corDeJogo = valorSeparadoMao[0];
+                    maoDaMaquina = passarUmaCartaParaPilhaDeJogo(pilhaDoJogo, maoDaMaquina, j);
+                    imprimirJogo();
+
+                    //Casse essa carta tenha um "+", então é pegado a valor antes do "+" e colocado em um loop para fazer o adversário comprar
+                    if (valorSeparadoMao[1].contains("+")) {
+                        for (int i = 0; i < Integer.parseInt(valorSeparadoMao[1].charAt(valorSeparadoMao[1].length() - 1) + ""); i++) {
+                            espere(1000);
+
+                            suaMao = comprar(suaMao);
+                            imprimirJogo();
+
+                        }
 
                     }
 
+                    //Agora caso a carta a ser jogada tenha "E" (espelho) ou "+4" ela pode ser jogada independente da situação
+                    if (valorSeparadoMao[1].contains("E") || valorSeparadoMao[1].contains("+4")) {
+                        //É esperado um tempo para a máquina "escolher" um cor
+                        espere(1000);
+                        System.out.println("Inimigo escolhendo a cor...");
+                        umaSimplesImpressao(cartasColoridas);
+                        System.out.println("Cartas do jogo:");
+                        umaSimplesImpressao(pilhaDoJogo);
+                        System.out.println("Suas cartas:");
+                        umaSimplesImpressao(suaMao);
+
+                        //A máquina escolhe uma cor aleatoriamente
+                        escolherCor(random.nextInt(4) + 1);
+
+                    } else if (valorSeparadoMao[1].contains("RR") || valorSeparadoMao[1].contains("B")) {
+                        //Caso a carta tenha chegado até aqui, ela tem a mesma cor, e caso a carta tenha "RR" ou "B", (reverter e bloquear), a máquina joga novamente
+                        espere(1000);
+                        jogarMaquina();
+
+                    }
+
+                    break;
                 }
 
-                if (valorSeparadoMao[1].contains("E") || valorSeparadoMao[1].contains("+4")) {
-                    espere(1000);
-                    System.out.println("Inimigo escolhendo a cor...");
-                    umaSimplesImpressao(cartasColoridas);
-                    System.out.println("Cartas do jogo:");
-                    umaSimplesImpressao(pilhaDoJogo);
-                    System.out.println("Suas cartas:");
-                    umaSimplesImpressao(suaMao);
-                    escolherCor(random.nextInt(3) + 1);
-
-                } else if (valorSeparadoMao[1].contains("RR") || valorSeparadoMao[1].contains("B")) {
-                    espere(1000);
-                    jogarMaquina();
-
-                }
-
-                break;
             }
+            //Aqui será testado se alguma carta foi jogada pelo algoritmo de cima, caso alguma carta tenha sido jogada, o jogo segue normalmente indo para a vez do jogador, agora caso o algoritmo não tenha jogado nenhuma carta, será feita uma compra
+            //e o algoritmo acima será chamado novamente, ou seja, a máquina fica comprando até ela ter alguma carta para jogar
+            if (maoDaMaquina.length == cartasMaquina) {
 
-
-        }
-        //aqui sera testado se alguma carta foi jogada pelo algoritmo de cima, caso alguma carta tenha sido jogada, o jogo segue
-        //normalmente indo para a vez do jogador, agora caso o algoritmo não tenha jogado nenhuma carta, sera feita uma compra
-        //e o algoritmo acima sera chamado novamente, ou seja, a maquina fica comprando ate ela ter alguma carta para jogar
-        if (maoDaMaquina.length == cartasMaquina) {
-
-            espere(800);
-            maoDaMaquina = comprar(maoDaMaquina);
-            imprimirJogo();
-            espere(500);
-            jogarMaquina();
+                espere(800);
+                maoDaMaquina = comprar(maoDaMaquina);
+                imprimirJogo();
+                espere(500);
+                jogarMaquina();
+            }
         }
     }
 
+    /**
+     *
+     * @param jogada índice que a carta a ser jogada se encontra no vetor
+     * @param vetorCartas
+     */
 
     static void jogar(String jogada, String[] vetorCartas) {
 
-        //aqui é decidido se foi uma jogafa válida ou não
-        //a variavel "vez" é true quando for a vez do jogador jogar e false quando for a vez da maquina, a função precisa saber
-        //para mudar o vetor certo
         if (!jogada.equals("loja")) {
-            //maoDaMaquina = compararCarta(vetorCartas[Integer.parseInt(jogada) - 1], pilhaDoJogo[0], maoDaMaquina);
+
+            //Aqui funciona da mesma forma explicada anteriormente, no método "jogarMaquina"
             String[] valorSeparadoMao = valorDaCarta(suaMao[Integer.parseInt(jogada) - 1]).split("#");
             String[] valorSeparadoPilha = valorDaCarta(pilhaDoJogo[0]).split("#");
             if (valorSeparadoMao[0].contains(corDeJogo) || valorSeparadoPilha[1].contains(valorSeparadoMao[1]) || valorSeparadoMao[1].contains("+4") || valorSeparadoMao[1].contains("E")) {
                 corDeJogo = valorSeparadoMao[0];
                 suaMao = passarUmaCartaParaPilhaDeJogo(pilhaDoJogo, vetorCartas, Integer.parseInt(jogada) - 1);
                 imprimirJogo();
-
 
                 if (valorSeparadoMao[1].contains("+")) {
                     for (int i = 0; i < Integer.parseInt(valorSeparadoMao[1].charAt(valorSeparadoMao[1].length() - 1) + ""); i++) {
@@ -1615,46 +1686,58 @@ public class UNO {
 
                 }
 
-
             } else {
 
                 System.out.println("Você não pode jogar um " + valorDaCarta(vetorCartas[Integer.parseInt(jogada) - 1]) + " em um " + valorDaCarta(pilhaDoJogo[0]));
-                jogar(scanner.next(), vetorCartas);
+                jogar(scanner.next(), suaMao);
 
             }
 
-
         } else {
-            //caso a jogada seja compra
+            //caso a jogada seja comprar, sua mão recebe a primeira carta da pilha da loja
             suaMao = comprar(vetorCartas);
             imprimirJogo();
-            //apos a compra ser realizada e as cartas atualizadas na tela do usuario, o metodo jogar é chamado novamente
+            //Após a compra ser realizada e as cartas atualizadas na tela, o método jogar é chamado novamente, pedindo para o usuário fazer uma nova jogada
             jogar(scanner.next(), suaMao);
 
         }
     }
 
+    /**
+     *
+     * @param carta
+     * @return o valor que a carta tem
+     */
 
     static String valorDaCarta(String carta) {
         //pega a linha que contem as informações da carta e retorna apenas a cor e o numero
-        //ex: recebe  "\u001B[34m│  MAISQUATRO #+4 │\n" e retorna "MAISQUATRO #+4"
+        //Exemplo: recebe  "\u001B[34m│  MAISQUATRO #+4 │\n" e retorna "MAISQUATRO #+4"
         return carta.substring(205, 224).replace("│", "").replace(" ", "");
     }
 
+    /**
+     * Atualiza o jogo, imprimindo a mão do adversário (parte de trás ou frente), depois a pilha de jogo na linha de baixo, e por último em baixo da pilha de jogo a mão do usuário
+     */
+
     static void imprimirJogo() {
-        System.out.println("Cartas do adversário (" + (maoDaMaquina.length) + ")");
-        //descomente o metodo abaixo e comente o "umaSimplesImpressao(maoDaMaquina);" para esconder as cartas da maquina
-        //esse metodo sera usado no jogo real, o utilizado atualmente é apenas para testes, não faz sentido você jogar vendo as cartas do seu adversario
+        System.out.println("\u001B[mCartas do adversário (" + (maoDaMaquina.length) + ")");
+        //Descomente o metodo abaixo e comente o "umaSimplesImpressao(maoDaMaquina);" para esconder as cartas da máquina
+        //esse método será usado no jogo real, o utilizado atualmente é apenas para testes, não faz sentido você jogar vendo as cartas do seu adversário
 
         //imprimirCartasBrancas(maoDaMaquina.length);
         umaSimplesImpressao(maoDaMaquina);
-        System.out.println("Cartas do jogo:");
+        System.out.println("\u001B[mCartas do jogo:");
         umaSimplesImpressao(pilhaDoJogo);
-        System.out.println("Suas cartas (" + (suaMao.length) + ")");
+        System.out.println("\u001B[mSuas cartas (" + (suaMao.length) + ")");
         umaSimplesImpressaoMao(suaMao);
     }
 
-    //representa quantas cartas o oponente tem exibindo cartas brancas
+    /**
+     * Imprimi a mão da máquina, porém a parte de trás das cartas, sendo possível ver apenas quantas cartas o adversário tem, e não sabendo exatamente quais são elas
+     * @param i
+     */
+
+    //representa quantas cartas o oponente tem, exibindo a parte de trás das cartas
     static void imprimirCartasBrancas(int i) {
 
         String[] cartaBrancaVetor = new String[maoDaMaquina.length];
@@ -1667,58 +1750,76 @@ public class UNO {
         umaSimplesImpressao(cartaBrancaVetor);
     }
 
+    /**
+     *
+     * @param cartasNaMao vetor que contenha as cartas de quem receberá as cartas
+     * @return esse vetor atualizado
+     */
+
     static String[] comprar(String[] cartasNaMao) {
 
-        //antes de comprar, virifica se a loja esta vazia, caso esteja, é passada todas as cartas da pilha de jogo de maneira aleatoria para a loja,
-        //ou o vetor "cartasEmbaralhadas", sobrando apenas 1 carta aleatoria para o jogo continuar
+        //Antes de comprar, verifica se a loja está vazia, caso esteja, é passada todas as cartas da pilha de jogo de maneira aleatória para a loja, ou o vetor "cartasEmbaralhadas", sobrando apenas 1 carta aleatória para o jogo continuar
 
         if (cartasEmbaralhadas.length == 0) {
 
+            //Caso o número da carta seja um "MO", ela é uma carta de modelo, então não deve passar para a loja novamente por não pertencer ao jogo
             for (int i = 0; i < pilhaDoJogo.length; i++) {
                 if (valorDaCarta(pilhaDoJogo[i]).endsWith("O")) {
+
+                    //Então o vetor é reordenado (essa carta vira a última)
                     reordenarVetor(i, pilhaDoJogo);
 
+                    //E um novo vetor é criado com -1 de tamanho, passando todas as cartas exceto o último índice, então ele é removido do vetor
                     String[] pilhaDeJogoAjuste = new String[pilhaDoJogo.length - 1];
                     for (int j = 0; j < pilhaDeJogoAjuste.length; j++) {
                         pilhaDeJogoAjuste[j] = pilhaDoJogo[j];
                     }
 
+                    //pilha de jogo recebe a referência do vetor com as cartas disponíveis novamente para a compra
                     pilhaDoJogo = pilhaDeJogoAjuste;
                 }
             }
 
+            //Agora que a pilha de jogo não tem mais cartas modelos, todas as suas cartas (exceto uma) são passadas para o vetor "cartasEmbaralhadas", sendo disponibilizadas para compra novamente
             cartasEmbaralhadas = new String[pilhaDoJogo.length - 1];
             pilhaDoJogo = passarCartasAleatoriasParaOutroVetor(cartasEmbaralhadas, pilhaDoJogo);
 
         }
 
         //para a compra ser realizada, é preciso de um vetor com o tamanho do tanto de carta que o jogador tem +1, que será a carta nova
-        //todas as cartas da mao do jogador sao passadas para este novo vetor com +1 espaço
+        //todas as cartas da mão do jogador são passadas para este novo vetor com +1 espaço
         String[] cartasNaMaoAjuste = new String[cartasNaMao.length + 1];
         for (int i = 1; i < cartasNaMaoAjuste.length; i++) {
             cartasNaMaoAjuste[i] = cartasNaMao[i - 1];
         }
 
-        //entao um carta aleatoria é adicionada nele
+        //Então uma carta aleatória é adicionada nele
         cartasNaMaoAjuste[0] = cartasEmbaralhadas[0];
-        //apos isso o vetor que contem as cartas da loja é reordenado
+        //Após isso o vetor que contêm as cartas da loja é reordenado
         reordenarVetor(0, cartasEmbaralhadas);
         String[] cartasEmbaralhadasAjuste = new String[cartasEmbaralhadas.length - 1];
 
         for (int i = 0; i < cartasEmbaralhadasAjuste.length; i++) {
             cartasEmbaralhadasAjuste[i] = cartasEmbaralhadas[i];
         }
-        //dps o vetor da loja recebe um novo vetor com todas as cartas dele mesmo menos a carta adicionada ao vetor da mao do jogador
+
+        //Depois o vetor da loja recebe um novo vetor com todas as cartas dele mesmo menos a carta adicionada ao vetor da mão do jogador
         cartasEmbaralhadas = cartasEmbaralhadasAjuste;
         return cartasNaMaoAjuste;
 
     }
 
+    /**
+     *
+     * @param vetorQueRecebe vetor para onde a carta vai
+     * @param vetorCartas vetor de onde a carta irá sair
+     * @param posicao índice da carta no vetor que ela sairá
+     * @return novo vetor com a carta solicitada já adicionada
+     */
+
     static String[] passarUmaCartaParaPilhaDeJogo(String[] vetorQueRecebe, String[] vetorCartas, int posicao) {
 
-        //mesma logica do de cima, a pilha recebe ela mesma com +1 de espaço
-        //e o vetor de onde a carta sairá recebe ele mesmo com -1 de espaço
-        //mas aqui a posicao da carta é passada como parametro
+        //Mesma lógica do método acima, a pilha recebe ela mesma com +1 de espaço e o vetor de onde a carta sairá recebe ele mesmo com -1 de espaço
         String[] vetorQueRecebeAjuste = new String[vetorQueRecebe.length + 1];
         String[] vetorCartasAjuste = new String[vetorCartas.length - 1];
 
@@ -1726,9 +1827,8 @@ public class UNO {
             vetorQueRecebeAjuste[i] = vetorQueRecebe[i - 1];
 
         }
+
         vetorQueRecebeAjuste[0] = vetorCartas[posicao];
-
-
         reordenarVetor(posicao, vetorCartas);
 
         for (int i = 0; i < vetorCartasAjuste.length; i++) {
@@ -1741,25 +1841,31 @@ public class UNO {
 
     }
 
+    /**
+     *
+     * @param vetorQueRecebe vetor que receberá as cartas
+     * @param vetorCartas vetor de onde as cartas sairão
+     * @return novo vetor com o tanto de cartas de acordo com o tamanho do vetor recebido e embaralhado aleatoriamente
+     */
+
     static String[] passarCartasAleatoriasParaOutroVetor(String[] vetorQueRecebe, String[] vetorCartas) {
 
-        //o for roda dependendo do tamanho do vetor que irá receber as cartas
-        //caso seja passado um vetor com 8 indices, 8 cartas serão adicionadas nele e essas mesmas cartas serão
-        //removidas do vetor de onde elas saem
+        int sorteio;
+        //o for roda dependendo do tamanho do vetor que irá receber as cartas caso seja passado um vetor com 8 índices, 8 cartas serão adicionadas nele e essas mesmas cartas serão removidas do vetor de onde elas saem
         for (int i = 0; i <= vetorQueRecebe.length - 1; i++) {
 
             //pega um numero sorteado de 0 ao numero de cartas presentes no vetor organizado
             sorteio = random.nextInt(vetorCartas.length);
             vetorQueRecebe[i] = vetorCartas[sorteio];
 
-            //"organiza" o vetor organizado, pegando o numero sorteado e, a partir dele, remover o indice e ajustar os valores subsequentes
-            //exemplo: numero sorteado é 8, então o indice 8 = o indice 9, o 9 = 10, o 10 = 11... até o final do vetor, sendo assim,
-            //o ultimo indice fica duplicado, porém o numero sorteado ja foi inserido no vetor embaralhado e removido do vetor organizado
+            //"organiza" o vetor organizado, pegando o número sorteado e, a partir dele, remover o índice e ajustar os valores subsequentes
+            //exemplo: número sorteado é 8, então o índice 8 = o índice 9, o 9 = 10, o 10 = 11... até o final do vetor, sendo assim,
+            //o último índice fica duplicado, porém o número sorteado já foi inserido no vetor embaralhado e removido do vetor organizado
             reordenarVetor(sorteio, vetorCartas);
 
-            //aqui é criado um novo vetor com o tamanho do vetor que teve o numero sorteado removido e o ultimo indice duplicado subtraindo 1
-            //exemplo: todas as cartas tem 6 indices, então esse novo vetor é criado com 5 indices
-            //isso é feito para remover o ultimo indice duplicado
+            //Aqui é criado um novo vetor com o tamanho do vetor que teve o número sorteado removido e o último índice duplicado subtraindo 1
+            //exemplo: todas as cartas têm 6 índices, então esse novo vetor é criado com 5 índices
+            //isso é feito para remover o último índice duplicado
 
             String[] todasCartasAdicionar = new String[vetorCartas.length - 1];
 
@@ -1775,61 +1881,39 @@ public class UNO {
         return vetorCartas;
     }
 
-    //criei para tirar os Thread.sleep do meio dos codigos
-    static void espere(int milisegundos){
+    /**
+     * Só está aqui para simplificar o código
+     * @param milissegundos tempo a ser esperado
+     */
+    static void espere(int milissegundos){
         try {
-            Thread.sleep(milisegundos);
+            Thread.sleep(milissegundos);
         } catch (Exception e){}
     }
 
+    /**
+     *
+     * @param numero qual índice será passado para o último índice
+     * @param todasCartas vetor que será reordenado
+     */
 
     static void reordenarVetor(int numero, String[] todasCartas) {
         //uma das principais funções, para remover uma carta de um vetor é preciso reordenar ele
-        //exemplo: temos o vetor (a,b,c,d,e,f,g,h) e temos que remover o indice 4
-        //então ficara (a,b,c,d,f,g,h,h) o ultimo indice sera duplicado e esse novo vetor sera será passado para um outro novo vetor
-        //com o tamanho dele -1, ou seja, o ultimo indice "h" sera removido
+        //exemplo: temos o vetor (a,b,c,d,e,f,g,h) e temos que remover o índice 4
+        //então ficara (a,b,c,d,f,g,h,h) o ultimo índice será duplicado e esse novo vetor será passado para um outro novo vetor
+        //com o tamanho dele -1, ou seja, o ultimo índice "h" será removido
         for (int j = numero; j < todasCartas.length - 1; j++) {
 
             todasCartas[j] = todasCartas[j + 1];
 
         }
 
-
     }
 
-    //metodo responsavel por formatar e imprimir as cartas recebidas, mesma coisa do de baixo
-    //imprimi horizontalmente e numera
-    static void umaSimplesImpressaoMao(String[] cartas) {
-
-        String[] cartasComLoja = new String[cartas.length + 1];
-        for (int i = 1; i < cartasComLoja.length; i++) {
-            cartasComLoja[i] = cartas[i - 1];
-        }
-
-        cartasComLoja[0] = loja;
-
-        umaSimplesImpressao(cartasComLoja);
-        String formatarNumeroCartas = "       LOJA         ";
-
-
-        //numera as cartas com o seu indice no vetor + 1, tendo os numeros com 1 digito espaço extra para compensar sua largura menor
-
-        for (int i = 0; i < cartas.length; i++) {
-
-
-            if (((i + 1) + "").length() == 1) {
-                formatarNumeroCartas += "         " + (i + 1) + "          ";
-            } else {
-                formatarNumeroCartas += "         " + (i + 1) + "         ";
-            }
-
-        }
-
-        System.out.println("\u001B[0m" + formatarNumeroCartas);
-
-
-    }
-
+    /**
+     * Responsável por formatar e imprimir as cartas recebidas, imprimi horizontalmente
+     * @param cartas vetor de cartas a ser impresso
+     */
 
     //recebe um vetor de "cartas" que não são cartas, são Strings
     //e imprimi esse vetor formatado horizontalmente
@@ -1837,15 +1921,14 @@ public class UNO {
 
         //String onde a primeira fileira é armazenada
         String formatarHorizontal = "";
-        //posições utilizadas para pegar toda a parte horizontal da primeira fileira da carta com o metodo subString
-        //tendo cada carta 24 caracteres horizontais (contando com os "[31m" responsaveis pelas cores das cartas e + 1 de um caractere especial bugado ai),
+        //posições utilizadas para pegar toda a parte horizontal da primeira fileira da carta com o método subString
+        //tendo cada carta 24 caracteres horizontais (contando com os "[31m" responsáveis pelas cores das cartas e + 1 de um caractere especial bugado ai),
         //então o subString pega os caracteres com
-        //os indices de 0 a 24
+        //os índices de 0 a 24
         int comecosubString = 0;
         int finalsubString = 24;
 
-
-        //esse for é responsavel por fazer as colunas, ele roda 11 vezes pois cada carta tem 11 caracteres verticais
+        //esse for é responsável por fazer as colunas, ele roda 11 vezes pois cada carta tem 11 caracteres verticais
         for (int i = 0; i < 11; i++) {
 
             // 24x
@@ -1861,30 +1944,58 @@ public class UNO {
 //      "\u001B[31m|                 |\n" +
 //      "\u001B[31m+-----------------+"
 
-
             //aqui, são feitas as fileiras
             for (int j = 0; j < cartas.length; j++) {
 
-                //apos a fileira ser formada, ela é concatenada ao lado das primeiras fileiras das outras cartas
+                //após a fileira ser formada, ela é concatenada ao lado das primeiras fileiras das outras cartas
                 formatarHorizontal += cartas[j].substring(comecosubString, finalsubString) + " ";
 
             }
 
-            //apos a fileira ser finalizada, é hora de começar a proxima coluna, ou linha de baixo
-            //aqui são acrescentados 25 para a posição da proxima subString, garantindo que a coluna de baixo será separada pelo subString
-            //indices 0 ao 24: primeira linha, 25 ao 49: segunda linha, 50 ao 74: terceita linha, 75 ao 99: quarta linha...
+            //após a fileira ser finalizada, é hora de começar a próxima coluna, ou linha de baixo
+            //aqui são acrescentados 25 para a posição da próxima subString, garantindo que a coluna de baixo será separada pelo subString
+            //índices 0 ao 24: primeira linha, 25 ao 49: segunda linha, 50 ao 74: terceira linha, 75 ao 99: quarta linha...
             comecosubString += 25;
             finalsubString += 25;
             //imprimi a fileira completa com a primeira coluna de todas as cartas
             System.out.println(formatarHorizontal);
-            //a coluna é excluida apos a impressao, para que a proxima coluna das cartas sejam armazenadas na mesma String
+            //a coluna é excluída após a impressão, para que a próxima coluna das cartas sejam armazenadas na mesma String
             formatarHorizontal = "";
 
         }
 
-
     }
 
+    /**
+     * Responsável por formatar e imprimir as cartas recebidas, mesma coisa do de cima, imprimi horizontalmente e numerada
+     * @param cartas vetor de cartas a ser impresso
+     */
+
+    static void umaSimplesImpressaoMao(String[] cartas) {
+
+        String[] cartasComLoja = new String[cartas.length + 1];
+        for (int i = 1; i < cartasComLoja.length; i++) {
+            cartasComLoja[i] = cartas[i - 1];
+        }
+
+        cartasComLoja[0] = loja;
+        umaSimplesImpressao(cartasComLoja);
+        String formatarNumeroCartas = "       LOJA         ";
+
+        //numera as cartas com o seu índice no vetor + 1, tendo os números com 1 digito espaço extra para compensar sua largura menor
+        for (int i = 0; i < cartas.length; i++) {
+
+            if (((i + 1) + "").length() == 1) {
+                formatarNumeroCartas += "         " + (i + 1) + "          ";
+            } else {
+                formatarNumeroCartas += "         " + (i + 1) + "         ";
+            }
+
+        }
+
+        System.out.println("\u001B[0m" + formatarNumeroCartas);
+
+    }
 
 }
 
