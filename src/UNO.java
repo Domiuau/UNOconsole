@@ -1783,6 +1783,7 @@ public class UNO {
             //Agora que a pilha de jogo não tem mais cartas modelos, todas as suas cartas (exceto uma) são passadas para o vetor "cartasEmbaralhadas", sendo disponibilizadas para compra novamente
             cartasEmbaralhadas = new String[pilhaDoJogo.length - 1];
             pilhaDoJogo = passarCartasAleatoriasParaOutroVetor(cartasEmbaralhadas, pilhaDoJogo);
+            corDeJogo = valorDaCarta(pilhaDoJogo[0]).substring(0, valorDaCarta(pilhaDoJogo[0]).length() - 3);
 
         }
 
