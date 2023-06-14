@@ -1590,7 +1590,7 @@ public class UNO {
                     //Caso o número ou a cor sejam iguais, a carta pode ser jogada, ou caso seja um espelho ou um +4
                     //Então a cor de jogo é mudada e a carta passa da mão da máquina para a pilha de jogo
                     corDeJogo = valorSeparadoMao[0];
-                    maoDaMaquina = passarUmaCartaParaPilhaDeJogo(pilhaDoJogo, maoDaMaquina, j);
+                    maoDaMaquina = passarUmaCartaParaPilhaDeJogo(maoDaMaquina, j);
                     imprimirJogo();
 
                     //Casse essa carta tenha um "+", então é pegado a valor antes do "+" e colocado em um loop para fazer o adversário comprar
@@ -1658,7 +1658,7 @@ public class UNO {
             String[] valorSeparadoPilha = valorDaCarta(pilhaDoJogo[0]).split("#");
             if (valorSeparadoMao[0].contains(corDeJogo) || valorSeparadoPilha[1].contains(valorSeparadoMao[1]) || valorSeparadoMao[1].contains("+4") || valorSeparadoMao[1].contains("E")) {
                 corDeJogo = valorSeparadoMao[0];
-                suaMao = passarUmaCartaParaPilhaDeJogo(pilhaDoJogo, vetorCartas, Integer.parseInt(jogada) - 1);
+                suaMao = passarUmaCartaParaPilhaDeJogo(vetorCartas, Integer.parseInt(jogada) - 1);
                 imprimirJogo();
 
                 if (valorSeparadoMao[1].contains("+")) {
@@ -1724,8 +1724,8 @@ public class UNO {
         //Descomente o metodo abaixo e comente o "umaSimplesImpressao(maoDaMaquina);" para esconder as cartas da máquina
         //esse método será usado no jogo real, o utilizado atualmente é apenas para testes, não faz sentido você jogar vendo as cartas do seu adversário
 
-        //imprimirCartasBrancas(maoDaMaquina.length);
-        umaSimplesImpressao(maoDaMaquina);
+        imprimirCartasBrancas(maoDaMaquina.length);
+        //umaSimplesImpressao(maoDaMaquina);
         System.out.println("\u001B[mCartas do jogo:");
         umaSimplesImpressao(pilhaDoJogo);
         System.out.println("\u001B[mSuas cartas (" + (suaMao.length) + ")");
@@ -1812,20 +1812,19 @@ public class UNO {
 
     /**
      *
-     * @param vetorQueRecebe vetor para onde a carta vai
      * @param vetorCartas vetor de onde a carta irá sair
      * @param posicao índice da carta no vetor que ela sairá
      * @return novo vetor com a carta solicitada já adicionada
      */
 
-    static String[] passarUmaCartaParaPilhaDeJogo(String[] vetorQueRecebe, String[] vetorCartas, int posicao) {
+    static String[] passarUmaCartaParaPilhaDeJogo(String[] vetorCartas, int posicao) {
 
         //Mesma lógica do método acima, a pilha recebe ela mesma com +1 de espaço e o vetor de onde a carta sairá recebe ele mesmo com -1 de espaço
-        String[] vetorQueRecebeAjuste = new String[vetorQueRecebe.length + 1];
+        String[] vetorQueRecebeAjuste = new String[pilhaDoJogo.length + 1];
         String[] vetorCartasAjuste = new String[vetorCartas.length - 1];
 
         for (int i = vetorQueRecebeAjuste.length - 1; i > 0; i--) {
-            vetorQueRecebeAjuste[i] = vetorQueRecebe[i - 1];
+            vetorQueRecebeAjuste[i] = pilhaDoJogo[i - 1];
 
         }
 

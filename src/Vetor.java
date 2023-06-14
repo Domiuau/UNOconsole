@@ -1,6 +1,14 @@
+import java.util.Random;
+import java.util.Scanner;
+
 public class Vetor {
 
+    static Random random = new Random();
+    static String[] pilhaDoJogo = new String[0];
+    static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
+
 
         String[] todasCartas = {
 
@@ -1091,18 +1099,156 @@ public class Vetor {
                         "\u001B[31m|                 |\n" +
                         "\u001B[31m+-----------------+",
 
-
-
-
-
-
-
-
-
-
-
-
-
         };
+
+        //Imprime todas as castas horizontalmente
+        umaSimplesImpressao(todasCartas);
+        //Um novo vetor é criado com o tamanho do vetor que armazena todas as cartas, assim sendo passado para o método "passarCartasAleatoriasParaOutroVetor", que irá embaralhar aleatoriamente
+        String[] cartasEmbaralhadas = new String[todasCartas.length];
+        passarCartasAleatoriasParaOutroVetor(cartasEmbaralhadas,todasCartas);
+        umaSimplesImpressao(cartasEmbaralhadas);
+
+        //Aqui é solicitado a quantidade de cartas na mão de cada jogador no ininio
+        int numeroDeCartasNaMao = scanner.nextInt();
+        String[] suaMao;
+        String[] maoDaMaquina;
+
+        //Então são criados vetores com o valor recebidos, sendo passado para o método "passarCartasAleatoriasParaOutroVetor" que irá passar cartas aleatórias para a mão de cada jogador
+        suaMao = new String[numeroDeCartasNaMao];
+        cartasEmbaralhadas = passarCartasAleatoriasParaOutroVetor(suaMao, cartasEmbaralhadas);
+        maoDaMaquina = new String[numeroDeCartasNaMao];
+        cartasEmbaralhadas = passarCartasAleatoriasParaOutroVetor(maoDaMaquina, cartasEmbaralhadas);
+
+        //Exibe as cartas de cada um
+        System.out.println("Mão da máquina");
+        umaSimplesImpressao(maoDaMaquina);
+        System.out.println("Sua mão");
+        umaSimplesImpressao(suaMao);
+
+        //Loop para passar uma carta de um vetor para o vetor da pilha de jogo, após a carta mudar de vetor o jogo é impresso novamente
+        while (true){
+            suaMao = passarUmaCartaParaPilhaDeJogo(suaMao, scanner.nextInt());
+
+            System.out.println("Mão da máquina");
+            umaSimplesImpressao(maoDaMaquina);
+            System.out.println("Pilha de jogo");
+            umaSimplesImpressao(pilhaDoJogo);
+            System.out.println("Sua mão");
+            umaSimplesImpressao(suaMao);
+
+            maoDaMaquina = passarUmaCartaParaPilhaDeJogo(maoDaMaquina, scanner.nextInt());
+
+            System.out.println("Mão da máquina");
+            umaSimplesImpressao(maoDaMaquina);
+            System.out.println("Pilha de jogo");
+            umaSimplesImpressao(pilhaDoJogo);
+            System.out.println("Sua mão");
+            umaSimplesImpressao(suaMao);
+
+        }
+
+    }
+
+    /**
+     * Responsável por formatar e imprimir as cartas recebidas, imprimi horizontalmente
+     * @param cartas vetor de cartas a ser impresso
+     */
+    static void umaSimplesImpressao(String[] cartas) {
+
+        String formatarHorizontal = "";
+        int comecosubString = 0;
+        int finalsubString = 24;
+
+        for (int i = 0; i < 11; i++) {
+
+            for (int j = 0; j < cartas.length; j++) {
+
+                formatarHorizontal += cartas[j].substring(comecosubString, finalsubString) + " ";
+
+            }
+
+            comecosubString += 25;
+            finalsubString += 25;
+            System.out.println(formatarHorizontal);
+            formatarHorizontal = "";
+
+        }
+
+    }
+
+    /**
+     *
+     * @param vetorQueRecebe vetor que receberá as cartas
+     * @param vetorCartas vetor de onde as cartas sairão
+     * @return novo vetor com o tanto de cartas de acordo com o tamanho do vetor recebido e embaralhado aleatoriamente
+     */
+
+    static String[] passarCartasAleatoriasParaOutroVetor(String[] vetorQueRecebe, String[] vetorCartas) {
+
+        int sorteio;
+        for (int i = 0; i <= vetorQueRecebe.length - 1; i++) {
+
+            sorteio = random.nextInt(vetorCartas.length);
+            vetorQueRecebe[i] = vetorCartas[sorteio];
+
+            reordenarVetor(sorteio, vetorCartas);
+
+
+            String[] todasCartasAdicionar = new String[vetorCartas.length - 1];
+
+            for (int j = 0; j < todasCartasAdicionar.length; j++) {
+                todasCartasAdicionar[j] = vetorCartas[j];
+            }
+
+            vetorCartas = todasCartasAdicionar;
+
+        }
+
+        return vetorCartas;
+    }
+    /**
+     *
+     * @param vetorCartas vetor de onde a carta irá sair
+     * @param posicao índice da carta no vetor que ela sairá
+     * @return novo vetor com a carta solicitada já adicionada
+     */
+    static String[] passarUmaCartaParaPilhaDeJogo(String[] vetorCartas, int posicao) {
+
+        //Mesma lógica do método acima, a pilha recebe ela mesma com +1 de espaço e o vetor de onde a carta sairá recebe ele mesmo com -1 de espaço
+        String[] vetorQueRecebeAjuste = new String[pilhaDoJogo.length + 1];
+        String[] vetorCartasAjuste = new String[vetorCartas.length - 1];
+
+        for (int i = vetorQueRecebeAjuste.length - 1; i > 0; i--) {
+            vetorQueRecebeAjuste[i] = pilhaDoJogo[i - 1];
+
+        }
+
+        vetorQueRecebeAjuste[0] = vetorCartas[posicao];
+        reordenarVetor(posicao, vetorCartas);
+
+        for (int i = 0; i < vetorCartasAjuste.length; i++) {
+            vetorCartasAjuste[i] = vetorCartas[i];
+
+        }
+
+        pilhaDoJogo = vetorQueRecebeAjuste;
+        return vetorCartasAjuste;
+
+    }
+
+    /**
+     *
+     * @param numero qual índice será passado para o último índice
+     * @param todasCartas vetor que será reordenado
+     */
+
+    static void reordenarVetor(int numero, String[] todasCartas) {
+
+        for (int j = numero; j < todasCartas.length - 1; j++) {
+
+            todasCartas[j] = todasCartas[j + 1];
+
+        }
+
     }
 }
