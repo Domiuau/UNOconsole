@@ -2,6 +2,7 @@
 
 - A aplicação consiste em um UNO feito no console onde o jogador joga contra um algoritmo
 - Projeto entregue como Projeto integrador durante o primeiro semestre de Análise e Desenvolvimento de Sistemas
+- O código do projeto está totalmente comentado, passo a passo de como funciona
 
 # Jogabilidade
 
