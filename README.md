@@ -27,6 +27,9 @@
   
 # Colocar em modo teste
 
+- Comente o método "imprimirCartasBrancas"
+- Descomente o método "umaSimplesImpressao"
+
 ![Jogabilidade](https://github.com/Domiuau/UNOconsole/blob/master/Assets/unogit5.png)
 
 
