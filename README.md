@@ -35,7 +35,7 @@
 
 ```bash
 # clonar repositório
-git clone https://github.com/Domiuau/Paint1.git
+git clone https://github.com/Domiuau/UNOconsole
 ```
 
 # Autor
